@@ -36,6 +36,9 @@ usb_setup_configfs() {
     write $GADGET_DIR/g1/strings/0x409/manufacturer "$USB_IMANUFACTURER"
     write $GADGET_DIR/g1/strings/0x409/product      "$USB_IPRODUCT"
 
+    sync
+    sleep 5
+
     if echo $USB_FUNCTIONS | grep -q "rndis"; then
         mkdir $GADGET_DIR/g1/functions/rndis.usb0
         mkdir $GADGET_DIR/g1/functions/rndis_bam.rndis
@@ -101,7 +104,7 @@ ip_setup() {
     
     ifconfig rndis0 $LOCAL_IP netmask 255.255.255.0 && USB_IFACE=rndis0
     if [ -z "$USB_IFACE" ]; then
-        ifconfig usb0 $LOCAL_IP && USB_IFACE=usb0
+        ifconfig usb0 $LOCAL_IP netmask 255.255.255.0 && USB_IFACE=usb0
     fi
 
     if [ -z "$USB_IFACE" ]; then
